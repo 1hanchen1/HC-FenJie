@@ -1,5 +1,8 @@
 name: HC-FenJie
 version: '${project.version}'
 main: com.hanchen.hcfenjie.Main
-depend: [EP-Lib]
 authors: [hanchen]
+commands:
+  hcfj:
+    aliases:
+      - fj

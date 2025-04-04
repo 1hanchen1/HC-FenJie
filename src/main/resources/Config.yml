@@ -1,0 +1,15 @@
+#gui界面设置
+inventory:
+  #gui标题
+  title: "§a分解界面"
+  #点击分解物品设置
+  itemStack:
+    id: 145
+    name: "§c点击分解"
+    lore:
+      - "§c点击分解"
+      - "§c点击分解"
+#消息,设置为none将不会发送
+message:
+  1: "§a分解物品成功 §f<number> §a件"
+  2: "§c分解物品失败 §f<number> §c件"
