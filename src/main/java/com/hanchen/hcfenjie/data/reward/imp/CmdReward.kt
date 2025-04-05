@@ -1,14 +1,14 @@
-package com.hanchen.hcfenjie.data.reward.imp;
+package com.hanchen.hcfenjie.data.reward.imp
 
-import com.hanchen.hcfenjie.data.reward.Reward;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import com.hanchen.hcfenjie.data.reward.Reward
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
-public class CmdReward implements Reward {
-    @Override
-    public void exeReward(Player player, String exeString) {
-        if (exeString.split("<->")[0].equals("cmd")) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), exeString.split("<->")[1].replaceAll("<player>", player.getName()));
+class CmdReward : Reward {
+    override fun exeReward(player: Player, exeString: String) {
+        val parts = exeString.split("<->")
+        if (parts[0] == "cmd") {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), parts[1].replace("<player>", player.name))
         }
     }
 }

@@ -1,10 +1,11 @@
-package com.hanchen.hcfenjie.util;
+package com.hanchen.hcfenjie.util
 
-import java.text.DecimalFormat;
+import java.text.DecimalFormat
+import kotlin.random.Random
 
-public class ChangeUtil {
-    public static boolean check(double d) {
-        DecimalFormat df = new DecimalFormat("######0.000");
-        return Math.random() - Double.parseDouble(df.format(d)) < 0.0d;
+object ChangeUtil {
+    fun check(d: Double): Boolean {
+        val df = DecimalFormat("######0.000")
+        return Random.nextDouble() - df.format(d).toDouble() < 0.0
     }
 }

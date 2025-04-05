@@ -1,7 +1,7 @@
-package com.hanchen.hcfenjie.data.matching;
+package com.hanchen.hcfenjie.data.matching
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemStack
 
-public interface Matching {
-    boolean isMatching(ItemStack itemStack, String str);
+interface Matching {
+    fun isMatching(itemStack: ItemStack, str: String): Boolean
 }

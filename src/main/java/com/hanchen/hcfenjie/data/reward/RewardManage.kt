@@ -1,25 +1,28 @@
-package com.hanchen.hcfenjie.data.reward;
+package com.hanchen.hcfenjie.data.reward
 
-import java.util.HashMap;
-import java.util.Map;
+object RewardManage {
+    private val rewardMap = HashMap<String, Reward>()
 
-public class RewardManage {
-    private static final Map<String, Reward> rewardMap = new HashMap<>();
-
-    public static void register(String type, Reward reward) {
-        rewardMap.putIfAbsent(type, reward);
-        System.out.println("[HC-FenJie]§a成功注册奖励类型: " + type);
-    }
-
-    public static Map<String, Reward> getRewardMap() {
-        return rewardMap;
-    }
-
-    public static Reward getReward(String type) {
-        if (rewardMap.get(type) != null) {
-            return rewardMap.get(type);
+    fun register(type: String, reward: Reward) {
+        if (!rewardMap.containsKey(type)) {
+            rewardMap[type] = reward
+            println("[HC-FenJie]§a成功注册奖励类型: $type")
         }
-        System.out.println("[HC-FenJie]§c奖励不存在 类型: " + type);
-        return null;
+    }
+
+    fun getRewardMap(): MutableMap<String, Reward> {
+        return rewardMap
+    }
+
+    fun getReward(type: String): Reward? {
+        return rewardMap[type].also {
+            if (it == null) {
+                println("[HC-FenJie]§c奖励不存在 类型: $type")
+            }
+        }
+    }
+
+    fun clear() {
+        rewardMap.clear()
     }
 }

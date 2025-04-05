@@ -6,3 +6,7 @@ commands:
   hcfj:
     aliases:
       - fj
+permissions:
+  hcfj.open:
+    description: "打开分解界面"
+    default: op

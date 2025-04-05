@@ -1,17 +1,20 @@
-package com.hanchen.hcfenjie.data.fenjie;
+package com.hanchen.hcfenjie.data.fenjie
 
-import java.util.HashMap;
-import java.util.Map;
+object FenJieManage {
+    private val fenJieMap = mutableMapOf<String, FenJie>()
 
-public class FenJieManage {
-    private static final Map<String, FenJie> fenJieMap = new HashMap<>();
-
-    public static void register(String fenJieName, FenJie fenJie) {
-        fenJieMap.putIfAbsent(fenJieName, fenJie);
-        System.out.println("[HC-FenJie]§a成功注册分解数据: " + fenJieName);
+    fun register(fenJieName: String, fenJie: FenJie) {
+        if (!fenJieMap.containsKey(fenJieName)) {
+            fenJieMap[fenJieName] = fenJie
+            println("[HC-FenJie]§a成功注册分解数据: $fenJieName")
+        }
     }
 
-    public static Map<String, FenJie> getFenJieMap() {
-        return fenJieMap;
+    fun getFenJieMap(): Map<String, FenJie> {
+        return fenJieMap
+    }
+
+    fun clear() {
+        fenJieMap.clear()
     }
 }

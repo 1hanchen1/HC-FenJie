@@ -1,87 +1,68 @@
-package com.hanchen.hcfenjie.data.fenjie.imp;
+package com.hanchen.hcfenjie.data.fenjie.imp
 
-import com.hanchen.hcfenjie.data.fenjie.FenJie;
-import com.hanchen.hcfenjie.data.matching.Matching;
-import com.hanchen.hcfenjie.data.matching.MatchingManage;
-import com.hanchen.hcfenjie.data.reward.Reward;
-import com.hanchen.hcfenjie.data.reward.RewardManage;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import com.hanchen.hcfenjie.data.fenjie.FenJie
+import com.hanchen.hcfenjie.data.matching.MatchingManage
+import com.hanchen.hcfenjie.data.reward.RewardManage
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
-import java.util.List;
+class FenJieObject(
+    private var fenJieName: String,
+    private var fenJieChange: Double,
+    private var fenJieMatchingList: List<String>,
+    private var fenJieRewardList: List<String>
+) : FenJie {
 
-public class FenJieObject implements FenJie {
-    private String fenJieName;
-    private double fenJieChange;
-    private List<String> fenJieRewardList;
-    private List<String> fenJieMatchingList;
+    constructor() : this("", 0.0, emptyList(), emptyList())
 
-    public FenJieObject() {
+    override fun getFenJieName(): String {
+        return fenJieName
     }
 
-    public FenJieObject(String fenJieName, double fenJieChange, List<String> fenJieMatchingList, List<String> fenJieRewardList) {
-        this.fenJieName = fenJieName;
-        this.fenJieChange = fenJieChange;
-        this.fenJieMatchingList = fenJieMatchingList;
-        this.fenJieRewardList = fenJieRewardList;
+    override fun setFenJieMatching(matchingList: List<String>) {
+        fenJieMatchingList = matchingList
     }
 
-    @Override
-    public String getFenJieName() {
-        return this.fenJieName;
+    override fun getFenJieChange(): Double {
+        return fenJieChange
     }
 
-    @Override
-    public void setFenJieMatching(List<String> matchingList) {
-        this.fenJieMatchingList = matchingList;
+    override fun setFenJieChange(change: Double) {
+        fenJieChange = change
     }
 
-    @Override
-    public double getFenJieChange() {
-        return this.fenJieChange;
+    override fun setFenJieReward(rewardList: List<String>) {
+        fenJieRewardList = rewardList
     }
 
-    @Override
-    public void setFenJieChange(double change) {
-        this.fenJieChange = change;
+    override fun getFenJieReward(): List<String> {
+        return fenJieRewardList
     }
 
-    @Override
-    public void setFenJieReward(List<String> rewardList) {
-        this.fenJieRewardList = rewardList;
+    override fun getFenJieMatching(): List<String> {
+        return fenJieMatchingList
     }
 
-    @Override
-    public List<String> getFenJieReward() {
-        return this.fenJieRewardList;
-    }
-
-    @Override
-    public List<String> getFenJieMatching() {
-        return this.fenJieMatchingList;
-    }
-
-    @Override
-    public void exeReward(Player player) {
-        for (String exeReward : this.fenJieRewardList) {
-            String rewardType = exeReward.split("<->")[0];
-            Reward reward = RewardManage.getReward(rewardType);
-            if (reward != null && rewardType != null) {
-                reward.exeReward(player, exeReward);
+    override fun exeReward(player: Player) {
+        for (exeReward in fenJieRewardList) {
+            val rewardType = exeReward.split("<->")[0]
+            val reward = RewardManage.getReward(rewardType)
+            if (reward != null) {
+                reward.exeReward(player, exeReward)
             }
         }
     }
 
-    @Override
-    public boolean isMatching(ItemStack itemStack) {
-        boolean bj = false;
-        for (String isMatching : this.fenJieMatchingList) {
-            String matchingType = isMatching.split("<->")[0];
-            Matching matching = MatchingManage.getMatching(matchingType);
-            if (matching != null && matchingType != null) {
-                bj = matching.isMatching(itemStack, isMatching);
+    override fun isMatching(itemStack: ItemStack): Boolean {
+        var match = false
+        for (matchingString in fenJieMatchingList) {
+            val matchingType = matchingString.split("<->")[0]
+            val matching = MatchingManage.getMatching(matchingType)
+            if (matching != null) {
+                match = matching.isMatching(itemStack, matchingString)
+                if (match) break
             }
         }
-        return bj;
+        return match
     }
 }

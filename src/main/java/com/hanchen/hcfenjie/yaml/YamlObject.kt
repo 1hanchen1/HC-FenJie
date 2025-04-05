@@ -1,54 +1,32 @@
-package com.hanchen.hcfenjie.yaml;
+package com.hanchen.hcfenjie.yaml
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.plugin.java.JavaPlugin
+import java.io.File
 
-import java.io.File;
-import java.io.IOException;
+class YamlObject(private val fileName: String, private val plugin: JavaPlugin) {
+    private val file: File
 
-public class YamlObject {
-    private final String configName;
-    private final File file;
-    private FileConfiguration fileConfiguration;
-    private final JavaPlugin javaPlugin;
-
-    public YamlObject(String configName, JavaPlugin javaPlugin) {
-        this.configName = configName;
-        this.file = new File(javaPlugin.getDataFolder(), configName);
-        this.fileConfiguration = YamlConfiguration.loadConfiguration(this.file);
-        this.javaPlugin = javaPlugin;
-    }
-
-    public void saveDefaultConfig() {
-        if (!this.file.exists()) {
-            this.javaPlugin.saveResource(this.configName, false);
-            this.fileConfiguration = YamlConfiguration.loadConfiguration(this.file);
+    init {
+        // 确保文件路径正确
+        file = File(plugin.dataFolder, fileName)
+        if (!file.parentFile.exists()) {
+            file.parentFile.mkdirs() // 如果父目录不存在，则创建
         }
     }
 
-    public FileConfiguration getConfig() {
-        return this.fileConfiguration;
-    }
-
-    public void saveConfig() {
-        try {
-            this.fileConfiguration.save(this.file);
-        } catch (IOException e) {
-            e.printStackTrace();
+    fun saveDefaultConfig() {
+        if (!file.exists()) {
+            // 从插件资源中加载文件
+            plugin.saveResource(fileName, false)
         }
     }
 
-    public void reloadConfig() {
-        try {
-            this.fileConfiguration = YamlConfiguration.loadConfiguration(this.file);
-            this.fileConfiguration.load(this.file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    fun reloadConfig(): YamlConfiguration {
+        return YamlConfiguration.loadConfiguration(file)
     }
 
-    public File getFile() {
-        return this.file;
+    fun getConfig(): YamlConfiguration {
+        return YamlConfiguration.loadConfiguration(file)
     }
 }

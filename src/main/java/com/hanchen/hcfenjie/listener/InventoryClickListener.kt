@@ -1,51 +1,53 @@
-package com.hanchen.hcfenjie.listener;
+package com.hanchen.hcfenjie.listener
 
-import com.hanchen.hcfenjie.Main;
-import com.hanchen.hcfenjie.data.fenjie.FenJie;
-import com.hanchen.hcfenjie.data.fenjie.FenJieManage;
-import com.hanchen.hcfenjie.util.ChangeUtil;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import com.hanchen.hcfenjie.Main
+import com.hanchen.hcfenjie.data.fenjie.FenJieManage
+import com.hanchen.hcfenjie.util.ChangeUtil
+import org.bukkit.Material
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.inventory.ItemStack
 
-public class InventoryClickListener implements Listener {
+class InventoryClickListener : Listener {
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        ItemStack itemStack;
-        Inventory inventory = event.getClickedInventory();
-        if (inventory != null && inventory.getTitle().equals(Main.getInstance().inventoryTitle)) {
-            Player player = (Player) event.getWhoClicked();
-            if (event.getSlot() == 49) {
-                event.setCancelled(true);
-                int yes = 0;
-                int no = 0;
-                for (int i = 0; i < inventory.getSize(); i++) {
-                    if (i != 49 && (itemStack = inventory.getItem(i)) != null && itemStack.getType() != Material.AIR && itemStack.hasItemMeta()) {
-                        for (FenJie fenJie : FenJieManage.getFenJieMap().values()) {
+    fun onInventoryClick(event: InventoryClickEvent) {
+        val inventory = event.clickedInventory ?: return
+        if (inventory.title != Main.instance.inventoryTitle) return
+
+        val player = event.whoClicked as Player
+        if (event.slot == 49) {
+            event.isCancelled = true
+            var yes = 0
+            var no = 0
+
+            for (i in 0 until inventory.size) {
+                if (i != 49) {
+                    val itemStack = inventory.getItem(i)
+                    if (itemStack != null && itemStack.type != Material.AIR && itemStack.hasItemMeta()) {
+                        for (fenJie in FenJieManage.getFenJieMap().values) {
                             if (fenJie.isMatching(itemStack)) {
-                                for (int a = 1; a <= itemStack.getAmount(); a++) {
+                                for (a in 1..itemStack.amount) {
                                     if (ChangeUtil.check(fenJie.getFenJieChange())) {
-                                        yes++;
-                                        fenJie.exeReward(player);
+                                        yes++
+                                        fenJie.exeReward(player)
                                     } else {
-                                        no++;
+                                        no++
                                     }
                                 }
-                                inventory.setItem(i, new ItemStack(Material.AIR));
+                                inventory.setItem(i, ItemStack(Material.AIR))
                             }
                         }
                     }
                 }
-                if (!Main.getInstance().message1.equals("none")) {
-                    player.sendMessage(Main.getInstance().message1.replaceAll("<number>", String.valueOf(yes)));
-                }
-                if (!Main.getInstance().message2.equals("none")) {
-                    player.sendMessage(Main.getInstance().message2.replaceAll("<number>", String.valueOf(no)));
-                }
+            }
+
+            if (Main.instance.successMessage != "none") {
+                player.sendMessage(Main.instance.successMessage!!.replace("<number>", yes.toString()))
+            }
+            if (Main.instance.failedMessage != "none") {
+                player.sendMessage(Main.instance.failedMessage!!.replace("<number>", no.toString()))
             }
         }
     }

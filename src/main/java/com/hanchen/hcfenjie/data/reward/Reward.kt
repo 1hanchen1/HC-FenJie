@@ -1,7 +1,7 @@
-package com.hanchen.hcfenjie.data.reward;
+package com.hanchen.hcfenjie.data.reward
 
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Player
 
-public interface Reward {
-    void exeReward(Player player, String str);
+interface Reward {
+    fun exeReward(player: Player, str: String)
 }
