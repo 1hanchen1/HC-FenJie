@@ -1,0 +1,11 @@
+#标识符,必须和文件名字一样,并且不能重复,不然会出现意想不到的错误!
+name: "ContainsLore"
+#分解成功几率
+change: 1
+#条件匹配设置,支持多种条件匹配
+matching:
+  - "containsLore<->§a模糊物品lore"
+#奖励设置
+reward:
+  - "cmd<->say 获得了物品3 <player>"
+  - "cmd<->say 获得了物品4 <player>"

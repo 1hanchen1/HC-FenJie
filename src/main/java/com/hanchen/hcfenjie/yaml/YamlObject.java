@@ -8,10 +8,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class YamlObject {
-    private String configName;
-    private File file;
+    private final String configName;
+    private final File file;
     private FileConfiguration fileConfiguration;
-    private JavaPlugin javaPlugin;
+    private final JavaPlugin javaPlugin;
 
     public YamlObject(String configName, JavaPlugin javaPlugin) {
         this.configName = configName;

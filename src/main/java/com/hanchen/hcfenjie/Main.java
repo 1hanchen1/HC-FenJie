@@ -17,12 +17,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class Main extends JavaPlugin {
+public class Main extends JavaPlugin {
     private static Main main;
     public List<File> fenJieFileList;
     public File fenJieManFile;
@@ -64,8 +65,8 @@ public final class Main extends JavaPlugin {
         itemMeta.setDisplayName(this.ConfigYaml.getConfig().getString("inventory.itemStack.name"));
         itemMeta.setLore(this.ConfigYaml.getConfig().getStringList("inventory.itemStack.lore"));
         this.inventoryItemStack.setItemMeta(itemMeta);
-        this.fenJieManFile = new File(".//plugins//EP-FenJie//FenJie");
-        this.fenJieFileList = new ArrayList();
+        this.fenJieManFile = new File(".//plugins//HC-FenJie//FenJie");
+        this.fenJieFileList = new ArrayList<>();
         loadFenJieFileList(this.fenJieManFile);
         FenJieManage.getFenJieMap().clear();
         MatchingManage.getMatchingMap().clear();
@@ -95,7 +96,6 @@ public final class Main extends JavaPlugin {
         this.ContainsLoreYaml.saveDefaultConfig();
         this.ContainsLoreYaml.reloadConfig();
     }
-
 
     public void loadFenJieFileList(File mainFile) {
         for (File file : (File[]) Objects.requireNonNull(mainFile.listFiles())) {

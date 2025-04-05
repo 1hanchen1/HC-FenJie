@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class EqualsName implements Matching {
-    @Override // me.erpang.epfenjie.data.matching.Matching
+    @Override
     public boolean isMatching(ItemStack itemStack, String matchingString) {
         String typeName = matchingString.split("<->")[0];
         if (typeName.equals("equalsName")) {

@@ -1,0 +1,11 @@
+#标识符,必须和文件名字一样,并且不能重复,不然会出现意想不到的错误!
+name: "EqualsName"
+#分解成功几率
+change: 0.5
+#条件匹配设置,支持多种条件匹配
+matching:
+  - "equalsName<->§a全局匹配物品名字"
+#奖励设置
+reward:
+  - "cmd<->say 获得了物品1 <player>"
+  - "cmd<->say 获得了物品2 <player>"
