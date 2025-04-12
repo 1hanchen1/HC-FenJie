@@ -1,7 +1,6 @@
 package com.hanchen.hcfenjie.data.reward.imp
 
 import com.hanchen.hcfenjie.data.reward.Reward
-import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.util.LoggerUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -27,9 +26,9 @@ class CmdReward : Reward {
      */
     override fun exeReward(player: Player, exeString: String) {
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("执行命令奖励: 玩家=${player.name}, 命令=$exeString")
-        }
+
+        LoggerUtil.debug("执行命令奖励: 玩家=${player.name}, 命令=$exeString")
+
 
         // 1. 提取有效命令内容（自动处理多余前缀）
         val rawCommand = exeString.substringAfter(PREFIX)

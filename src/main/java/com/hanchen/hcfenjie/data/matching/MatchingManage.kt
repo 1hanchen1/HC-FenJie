@@ -1,6 +1,5 @@
 package com.hanchen.hcfenjie.data.matching
 
-import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.util.LoggerUtil
 
 /**
@@ -18,16 +17,11 @@ object MatchingManage {
     fun register(type: String, matching: Matching) {
         matchingMap.computeIfAbsent(type) {
             // 调试模式提示
-            if (Main.instance.config.getBoolean("debug-mode", false)) {
-                LoggerUtil.debug("注册匹配类型: $type")
-            }
             LoggerUtil.info("注册匹配类型: $type")
             matching
         } ?: run {
             // 调试模式提示
-            if (Main.instance.config.getBoolean("debug-mode", false)) {
-                LoggerUtil.debug("匹配类型 $type 已存在，跳过注册")
-            }
+            LoggerUtil.debug("匹配类型 $type 已存在，跳过注册")
             LoggerUtil.warn("匹配类型 $type 已存在，跳过注册")
         }
     }
@@ -41,9 +35,7 @@ object MatchingManage {
         if (it == null) {
             LoggerUtil.warn("未注册的匹配类型: $type")
             // 调试模式提示
-            if (Main.instance.config.getBoolean("debug-mode", false)) {
-                LoggerUtil.debug("尝试获取未注册的匹配类型: $type")
-            }
+            LoggerUtil.debug("尝试获取未注册的匹配类型: $type")
         }
     }
 
@@ -59,9 +51,6 @@ object MatchingManage {
     fun clear() {
         matchingMap.clear()
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("已清空所有匹配类型")
-        }
         LoggerUtil.info("已清空所有匹配类型")
     }
 }

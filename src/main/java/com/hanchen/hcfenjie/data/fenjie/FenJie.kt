@@ -5,8 +5,8 @@ import org.bukkit.inventory.ItemStack
 
 /**
  * 分解功能核心接口
- * @property fenJieName 分解配置名称
- * @property fenJieChange 分解成功概率（0.0-1.0）
+ * @property FenJieName 分解配置名称
+ * @property FenJieChange 分解成功概率（0.0-1.0）
  */
 interface FenJie {
     /**

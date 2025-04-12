@@ -7,7 +7,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.inventory.ItemStack
 
 /**
  * 库存关闭监听器
@@ -41,9 +40,8 @@ class InventoryCloseListener : Listener {
                 remaining.forEach { leftover ->
                     player.world.dropItem(player.location, leftover).apply {
                         // 调试模式提示
-                        if (Main.instance.config.getBoolean("debug-mode", false)) {
-                            LoggerUtil.debug("玩家 ${player.name} 背包已满，物品掉落在地面: ${leftover.type}")
-                        }
+                        LoggerUtil.debug("玩家 ${player.name} 背包已满，物品掉落在地面: ${leftover.type}")
+
                     }
                 }
             }
@@ -51,8 +49,6 @@ class InventoryCloseListener : Listener {
         }
 
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("玩家 ${player.name} 关闭分解界面，返还 ${itemsToReturn.size} 个物品")
-        }
+        LoggerUtil.debug("玩家 ${player.name} 关闭分解界面，返还 ${itemsToReturn.size} 个物品")
     }
 }

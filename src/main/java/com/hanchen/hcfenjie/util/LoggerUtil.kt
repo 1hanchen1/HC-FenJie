@@ -1,8 +1,7 @@
 package com.hanchen.hcfenjie.util
 
 import com.hanchen.hcfenjie.Main
-import com.hanchen.hcfenjie.util.MessageUtil
-import org.bukkit.ChatColor
+import com.hanchen.hcfenjie.yaml.ConfigManager
 
 /**
  * 插件日志工具类
@@ -56,7 +55,7 @@ object LoggerUtil {
      * @param message 日志内容（支持颜色代码）
      */
     fun debug(message: String) {
-        if (plugin.config.getBoolean("debug-mode", false)) {
+        if (ConfigManager.debugMode) {
             val coloredMessage = MessageUtil.translateAdvancedColorCodes(message)
             plugin.logger?.info(coloredMessage)
         }

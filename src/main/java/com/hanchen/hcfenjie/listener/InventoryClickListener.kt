@@ -3,7 +3,6 @@ package com.hanchen.hcfenjie.listener
 import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.data.fenjie.FenJieManage
 import com.hanchen.hcfenjie.util.ChangeUtil
-import com.hanchen.hcfenjie.inventory.InventoryUtil
 import com.hanchen.hcfenjie.util.LoggerUtil
 import com.hanchen.hcfenjie.util.MessageUtil
 import org.bukkit.Material
@@ -13,7 +12,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemStack
 
 class InventoryClickListener : Listener {
     @EventHandler

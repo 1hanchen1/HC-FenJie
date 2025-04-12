@@ -1,8 +1,6 @@
 package com.hanchen.hcfenjie.data.fenjie
 
 import com.hanchen.hcfenjie.util.LoggerUtil
-import com.hanchen.hcfenjie.util.MessageUtil
-import com.hanchen.hcfenjie.Main
 
 /**
  * 分解管理器
@@ -18,17 +16,11 @@ object FenJieManage {
      */
     fun register(fenJieName: String, fenJie: FenJie) {
         fenJieMap.computeIfAbsent(fenJieName) {
-            // 调试模式提示
-            if (Main.instance.config.getBoolean("debug-mode", false)) {
-                LoggerUtil.debug("注册分解配置: $fenJieName")
-            }
             LoggerUtil.info("注册分解配置: $fenJieName")
             fenJie
         } ?: run {
             // 调试模式提示
-            if (Main.instance.config.getBoolean("debug-mode", false)) {
-                LoggerUtil.debug("分解配置 $fenJieName 已存在，跳过注册")
-            }
+            LoggerUtil.debug("分解配置 $fenJieName 已存在，跳过注册")
             LoggerUtil.warn("分解配置 $fenJieName 已存在，跳过注册")
         }
     }
@@ -44,10 +36,6 @@ object FenJieManage {
      */
     fun clear() {
         fenJieMap.clear()
-        // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("已清空所有分解配置")
-        }
         LoggerUtil.info("已清空所有分解配置")
     }
 }

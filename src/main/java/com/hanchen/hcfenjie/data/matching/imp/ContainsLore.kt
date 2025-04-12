@@ -1,10 +1,8 @@
 package com.hanchen.hcfenjie.data.matching.imp
 
-import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.data.matching.Matching
 import com.hanchen.hcfenjie.util.LoggerUtil
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 
 /**
  * 包含描述匹配器
@@ -24,9 +22,7 @@ class ContainsLore : Matching {
         } ?: false
 
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("检查物品描述是否包含: 物品=${itemStack.type}, 文本=$args, 结果=$result")
-        }
+        LoggerUtil.debug("检查物品描述是否包含: 物品=${itemStack.type}, 文本=$args, 结果=$result")
 
         return result
     }

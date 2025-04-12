@@ -36,10 +36,9 @@ object InventoryUtil {
         // 打开库存
         player.openInventory(inventory)
 
-        // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("为玩家 ${player.name} 打开分解界面")
-        }
+        // 调试模式提示 i
+        LoggerUtil.debug("为玩家 ${player.name} 打开分解界面")
+
     }
 
     // 添加物品给予方法（处理背包满和掉落逻辑）

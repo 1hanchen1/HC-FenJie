@@ -1,6 +1,5 @@
 package com.hanchen.hcfenjie.data.fenjie.imp
 
-import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.data.fenjie.FenJie
 import com.hanchen.hcfenjie.data.matching.MatchingManage
 import com.hanchen.hcfenjie.data.reward.RewardManage
@@ -79,9 +78,7 @@ class FenJieObject(
      */
     override fun exeReward(player: Player) {
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("执行奖励: 玩家=${player.name}, 分解配置=${fenJieName}")
-        }
+        LoggerUtil.debug("执行奖励: 玩家=${player.name}, 分解配置=${fenJieName}")
 
         fenJieRewardList.forEach { rewardStr ->
             rewardStr.split("<->", limit = 2).takeIf { it.size == 2 }?.let { (type, args) ->
@@ -98,9 +95,7 @@ class FenJieObject(
      */
     override fun isMatching(itemStack: ItemStack): Boolean {
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("检查物品匹配: 物品=${itemStack.type}, 分解配置=${fenJieName}")
-        }
+        LoggerUtil.debug("检查物品匹配: 物品=${itemStack.type}, 分解配置=${fenJieName}")
 
         return fenJieMatchingList.any { matchingStr ->
             matchingStr.split("<->", limit = 2).takeIf { it.size == 2 }?.let { (type, args) ->

@@ -2,8 +2,9 @@ package com.hanchen.hcfenjie.command
 
 import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.inventory.InventoryUtil
-import com.hanchen.hcfenjie.util.MessageUtil
 import com.hanchen.hcfenjie.util.LoggerUtil
+import com.hanchen.hcfenjie.util.MessageUtil
+import com.hanchen.hcfenjie.yaml.ConfigManager
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -28,9 +29,7 @@ class MainCommand : CommandExecutor, TabCompleter {
         if (command.name !in listOf("hcfj", "fj")) return true
 
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("命令执行: $label ${args.joinToString(" ")}")
-        }
+        LoggerUtil.debug("命令执行: $label ${args.joinToString(" ")}")
 
         // 根据参数处理不同命令
         when {
@@ -42,7 +41,6 @@ class MainCommand : CommandExecutor, TabCompleter {
                 else -> MessageUtil.sendMessage(
                     sender,
                     (Main.instance.prefix + Main.instance.unknownCommandMessage?.replace("%command%", label))
-                        ?: "§c未知命令。使用 /$label help 查看帮助。"
                 )
             }
         }
@@ -55,9 +53,7 @@ class MainCommand : CommandExecutor, TabCompleter {
      */
     private fun showHelp(sender: CommandSender) {
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("显示帮助信息")
-        }
+        LoggerUtil.debug("显示帮助信息")
 
         // 获取帮助信息并发送
         val messages = listOfNotNull(
@@ -75,14 +71,12 @@ class MainCommand : CommandExecutor, TabCompleter {
      */
     private fun handleOpenCommand(sender: CommandSender) {
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
             LoggerUtil.debug("处理打开命令")
-        }
 
         // 检查发送者是否为玩家
         if (sender !is Player) {
             MessageUtil.sendMessage(sender,
-                (Main.instance.prefix + Main.instance.notAPlayerMessage) ?: "§c只有玩家可以执行此命令！"
+                (Main.instance.prefix + Main.instance.notAPlayerMessage)
             )
             return
         }
@@ -93,7 +87,6 @@ class MainCommand : CommandExecutor, TabCompleter {
             MessageUtil.sendMessage(
                 sender,
                 (Main.instance.prefix + Main.instance.noPermissionMessage?.replace("%permission%", permission))
-                    ?: "§c你没有权限 $permission 执行此命令！"
             )
             return
         }
@@ -101,7 +94,7 @@ class MainCommand : CommandExecutor, TabCompleter {
         // 打开分解界面
         InventoryUtil.openInventory(sender)
         MessageUtil.sendMessage(sender,
-            (Main.instance.prefix + Main.instance.openSuccessMessage) ?: "§a分解界面已打开！"
+            (Main.instance.prefix + Main.instance.openSuccessMessage)
         )
     }
 
@@ -111,9 +104,7 @@ class MainCommand : CommandExecutor, TabCompleter {
      */
     private fun handleReloadCommand(sender: CommandSender) {
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
             LoggerUtil.debug("处理重载命令")
-        }
 
         // 检查权限
         val permission = "hcfj.reload"
@@ -121,7 +112,6 @@ class MainCommand : CommandExecutor, TabCompleter {
             MessageUtil.sendMessage(
                 sender,
                 (Main.instance.prefix + Main.instance.noPermissionMessage?.replace("%permission%", permission))
-                    ?: "§c你没有权限 $permission 执行此命令！"
             )
             return
         }
@@ -130,7 +120,8 @@ class MainCommand : CommandExecutor, TabCompleter {
         Main.instance.run {
             initDefaultYaml()
             initFenJie()
-            MessageUtil.sendMessage(sender, (Main.instance.prefix + reloadSuccessMessage) ?: "§a配置重载成功！")
+            ConfigManager.reload()
+            MessageUtil.sendMessage(sender, (Main.instance.prefix + reloadSuccessMessage))
         }
     }
 
@@ -151,9 +142,7 @@ class MainCommand : CommandExecutor, TabCompleter {
         if (command.name !in listOf("hcfj", "fj")) return emptyList()
 
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("命令补全: $alias ${args.joinToString(" ")}")
-        }
+        LoggerUtil.debug("命令补全: $alias ${args.joinToString(" ")}")
 
         // 根据参数大小提供补全建议
         return when (args.size) {

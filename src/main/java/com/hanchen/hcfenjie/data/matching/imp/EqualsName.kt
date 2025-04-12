@@ -1,10 +1,8 @@
 package com.hanchen.hcfenjie.data.matching.imp
 
-import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.data.matching.Matching
 import com.hanchen.hcfenjie.util.LoggerUtil
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 
 /**
  * 名称相等匹配器
@@ -22,9 +20,7 @@ class EqualsName : Matching {
         val result = meta.hasDisplayName() && meta.displayName.equals(args, ignoreCase = true)
 
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("检查物品名称是否相等: 物品=${itemStack.type}, 名称=${meta.displayName}, 目标名称=$args, 结果=$result")
-        }
+        LoggerUtil.debug("检查物品名称是否相等: 物品=${itemStack.type}, 名称=${meta.displayName}, 目标名称=$args, 结果=$result")
 
         return result
     }

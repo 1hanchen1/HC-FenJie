@@ -1,0 +1,13 @@
+#标识符,必须和文件名字一样,并且不能重复,不然会出现意想不到的错误!
+name: "Example2"
+#分解成功几率
+change: 1
+#条件匹配设置,支持多种条件匹配
+matching:
+  - "equalsName<->传奇"  # 名称为"传奇"
+  - "containsLore&7传说级武器\\n&e攻击力+100"  # Lore包含匹配两行
+#奖励设置
+reward:
+  - "cmd<->give <player> diamond 5"  # 指令获取
+  - "mm<->SkeletonKingSword<->3"  # mm库
+  - "ni<->ExampleItem<->3"  #ni库

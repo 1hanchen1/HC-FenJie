@@ -1,6 +1,5 @@
 package com.hanchen.hcfenjie.util
 
-import com.hanchen.hcfenjie.Main
 import kotlin.random.Random
 
 /**
@@ -19,9 +18,7 @@ object ChangeUtil {
         require(probability in 0.0..1.0) { "概率值必须在0-1之间" }
 
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("概率检查: 概率值=$probability")
-        }
+        LoggerUtil.debug("概率检查: 概率值=$probability")
 
         val scaledProb = (probability * PRECISION).toInt()
         return Random.nextInt(PRECISION) < scaledProb

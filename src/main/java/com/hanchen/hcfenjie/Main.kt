@@ -5,6 +5,8 @@ import com.hanchen.hcfenjie.data.fenjie.FenJieManage
 import com.hanchen.hcfenjie.data.fenjie.imp.FenJieObject
 import com.hanchen.hcfenjie.data.matching.MatchingManage
 import com.hanchen.hcfenjie.data.matching.imp.ContainsLore
+import com.hanchen.hcfenjie.data.matching.imp.ContainsName
+import com.hanchen.hcfenjie.data.matching.imp.EqualsLore
 import com.hanchen.hcfenjie.data.matching.imp.EqualsName
 import com.hanchen.hcfenjie.data.reward.RewardManage
 import com.hanchen.hcfenjie.data.reward.imp.CmdReward
@@ -32,14 +34,11 @@ class Main : JavaPlugin() {
             private set
     }
 
-    var fenJieFileList: List<File> = ArrayList()
-    var fenJieManFile: File? = null
-    var configYaml: YamlObject? = null
-    var equalsNameYaml: YamlObject? = null
-    var MythicitemYaml: YamlObject? = null
-    var equalsLoreYaml: YamlObject? = null
-    var containsNameYaml: YamlObject? = null
-    var containsLoreYaml: YamlObject? = null
+    private var fenJieFileList: List<File> = ArrayList()
+    private var fenJieManFile: File? = null
+    private var configYaml: YamlObject? = null
+    private var Example1Yaml: YamlObject? = null
+    private var Example2Yaml: YamlObject? = null
     var inventoryTitle: String? = null
     var inventoryItemStack: ItemStack? = null
 
@@ -66,7 +65,7 @@ class Main : JavaPlugin() {
         initFenJie()
         Bukkit.getPluginManager().registerEvents(InventoryClickListener(), this)
         Bukkit.getPluginManager().registerEvents(InventoryCloseListener(), this)
-        getCommand("hcfj")!!.setExecutor(MainCommand())
+        getCommand("hcfj")!!.executor = MainCommand()
 
         MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a██╗  ██╗  ██████╗")
         MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a██║  ██║ ██╔════╝")
@@ -77,9 +76,8 @@ class Main : JavaPlugin() {
 
 
         // 调试模式提示
-        if (config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("插件已启用，调试模式已开启")
-        }
+        LoggerUtil.debug("插件已启用，调试模式已开启")
+
     }
 
     /**
@@ -93,9 +91,7 @@ class Main : JavaPlugin() {
         MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&4██║  ██║  ██████╗")
         MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&4╚═╝  ╚═╝  ╚═════╝")
         // 调试模式提示
-        if (config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("插件已禁用，调试模式已关闭")
-        }
+        LoggerUtil.debug("插件已禁用，调试模式已关闭")
     }
 
     /**
@@ -162,11 +158,11 @@ class Main : JavaPlugin() {
         }
         MatchingManage.register("equalsName", EqualsName())
         MatchingManage.register("containsLore", ContainsLore())
+        MatchingManage.register("containsName", ContainsName())
+        MatchingManage.register("equalsLore", EqualsLore())
 
         // 调试模式提示
-        if (config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("分解逻辑初始化完成")
-        }
+        LoggerUtil.debug("分解逻辑初始化完成")
     }
 
     /**
@@ -176,27 +172,22 @@ class Main : JavaPlugin() {
         configYaml = YamlObject("Config.yml", this)
         configYaml!!.saveDefaultConfig()
         configYaml!!.reloadConfig()
-        equalsNameYaml = YamlObject("FenJie/EqualsName.yml", this)
-        equalsNameYaml!!.saveDefaultConfig()
-        equalsNameYaml!!.reloadConfig()
-        containsLoreYaml = YamlObject("FenJie/ContainsLore.yml", this)
-        containsLoreYaml!!.saveDefaultConfig()
-        containsLoreYaml!!.reloadConfig()
-        MythicitemYaml = YamlObject("FenJie/Mythicitem.yml", this)
-        MythicitemYaml!!.saveDefaultConfig()
-        MythicitemYaml!!.reloadConfig()
+        Example1Yaml = YamlObject("FenJie/Example1.yml", this)
+        Example1Yaml!!.saveDefaultConfig()
+        Example1Yaml!!.reloadConfig()
+        Example2Yaml = YamlObject("FenJie/Example2.yml", this)
+        Example2Yaml!!.saveDefaultConfig()
+        Example2Yaml!!.reloadConfig()
 
         // 调试模式提示
-        if (config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("默认配置文件初始化完成")
-        }
+        LoggerUtil.debug("默认配置文件初始化完成")
     }
 
     /**
      * 加载分解文件列表
      * @param mainFile 主文件夹
      */
-    fun loadFenJieFileList(mainFile: File) {
+    private fun loadFenJieFileList(mainFile: File) {
         for (file in mainFile.listFiles()!!) {
             if (file.isDirectory) {
                 loadFenJieFileList(file)
@@ -206,8 +197,6 @@ class Main : JavaPlugin() {
         }
 
         // 调试模式提示
-        if (config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("加载分解文件列表完成，共加载 ${fenJieFileList.size} 个文件")
-        }
+        LoggerUtil.debug("加载分解文件列表完成，共加载 ${fenJieFileList.size} 个文件")
     }
 }

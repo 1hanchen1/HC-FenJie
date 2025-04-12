@@ -14,18 +14,14 @@ class YamlObject (
     private val fileName: String,
     private val plugin: JavaPlugin
 ) {
-    private val file: File
-    private var cachedConfig: YamlConfiguration? = null
-
-    init {
-        file = File(plugin.dataFolder, fileName).apply {
-            parentFile.takeUnless { it.exists() }?.let { dir ->
-                if (!dir.mkdirs()) {
-                    LoggerUtil.error("无法创建配置目录: ${dir.absolutePath}")
-                }
+    private val file: File = File(plugin.dataFolder, fileName).apply {
+        parentFile.takeUnless { it.exists() }?.let { dir ->
+            if (!dir.mkdirs()) {
+                LoggerUtil.error("无法创建配置目录: ${dir.absolutePath}")
             }
         }
     }
+    private var cachedConfig: YamlConfiguration? = null
 
     /**
      * 初始化配置文件
@@ -70,7 +66,7 @@ class YamlObject (
     /**
      * 将内存配置写入文件
      */
-    fun saveConfig() {
+    private fun saveConfig() {
         try {
             getConfig().save(file)
             LoggerUtil.debug("已保存配置文件: $fileName")

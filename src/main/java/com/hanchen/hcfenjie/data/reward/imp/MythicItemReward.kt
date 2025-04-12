@@ -6,7 +6,6 @@ import com.hanchen.hcfenjie.util.LoggerUtil
 import com.hanchen.hcfenjie.util.MessageUtil
 import io.lumine.xikage.mythicmobs.MythicMobs
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 
 class MythicItemReward : Reward {
     companion object {
