@@ -20,6 +20,7 @@ prefix: "§e分解系统 §6>> "
 messages:
   success: "&a分解物品成功 &f<number> &a件"
   failed: "&c分解物品失败 &f<number> &c件"
+  nodecompose: "&c该物品无法分解！"
   no-permission: "&c你没有权限执行这个命令！缺少权限: &4%permission%"
   not-a-player: "&c这个命令只能由玩家执行！"
   help-header: "&a=== HCFenJie 插件帮助 ==="

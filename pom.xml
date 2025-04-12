@@ -133,6 +133,12 @@
           <version>${kotlin.version}</version>
           <scope>test</scope>
       </dependency>
-      <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
+      <dependency>
+          <groupId>io.lumine.xikage.mythicmobs</groupId>
+          <artifactId>MythicMobs</artifactId>
+          <version>4.11</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/.lib/MythicMobs-4.11.jar</systemPath>
+      </dependency>
   </dependencies>
 </project>

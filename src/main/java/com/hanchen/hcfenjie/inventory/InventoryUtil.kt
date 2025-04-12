@@ -5,6 +5,7 @@ import com.hanchen.hcfenjie.util.LoggerUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 
 /**
  * 库存工具类
@@ -39,5 +40,22 @@ object InventoryUtil {
         if (Main.instance.config.getBoolean("debug-mode", false)) {
             LoggerUtil.debug("为玩家 ${player.name} 打开分解界面")
         }
+    }
+
+    // 添加物品给予方法（处理背包满和掉落逻辑）
+    fun giveItemSafely(player: Player, item: ItemStack): Int {
+        val initialAmount = item.amount
+        val result = player.inventory.addItem(item)
+        val remaining = result.values.sumOf { it?.amount ?: 0 }
+
+        // 掉落剩余物品
+        if (remaining > 0) {
+            val world = player.world
+            val location = player.location
+            val dropItem = item.clone().apply { this.amount = remaining }
+            world.dropItem(location, dropItem)
+        }
+
+        return remaining
     }
 }

@@ -8,6 +8,7 @@ import com.hanchen.hcfenjie.data.matching.imp.ContainsLore
 import com.hanchen.hcfenjie.data.matching.imp.EqualsName
 import com.hanchen.hcfenjie.data.reward.RewardManage
 import com.hanchen.hcfenjie.data.reward.imp.CmdReward
+import com.hanchen.hcfenjie.data.reward.imp.MythicItemReward
 import com.hanchen.hcfenjie.listener.InventoryClickListener
 import com.hanchen.hcfenjie.listener.InventoryCloseListener
 import com.hanchen.hcfenjie.util.LoggerUtil
@@ -34,6 +35,7 @@ class Main : JavaPlugin() {
     var fenJieManFile: File? = null
     var configYaml: YamlObject? = null
     var equalsNameYaml: YamlObject? = null
+    var MythicitemYaml: YamlObject? = null
     var equalsLoreYaml: YamlObject? = null
     var equalsItemYaml: YamlObject? = null
     var containsNameYaml: YamlObject? = null
@@ -53,6 +55,7 @@ class Main : JavaPlugin() {
     var openSuccessMessage: String? = null
     var unknownCommandMessage: String? = null
     var prefix: String? = null
+    var nodecompose: String? = null
 
     /**
      * 插件启用时的初始化逻辑
@@ -112,6 +115,7 @@ class Main : JavaPlugin() {
         reloadSuccessMessage = configYaml!!.getConfig().getString("messages.reload-success")
         openSuccessMessage = configYaml!!.getConfig().getString("messages.open-success")
         unknownCommandMessage = configYaml!!.getConfig().getString("messages.unknownCommandMessage")
+        nodecompose = configYaml!!.getConfig().getString("messages.nodecompose")
 
         // 加载库存配置
         inventoryTitle = MessageUtil.translateAdvancedColorCodes(configYaml!!.getConfig().getString("inventory.title"))
@@ -144,6 +148,12 @@ class Main : JavaPlugin() {
 
         // 注册奖励和匹配类型
         RewardManage.register("cmd", CmdReward())
+        if (Bukkit.getPluginManager().isPluginEnabled("MythicMobs")) {
+            RewardManage.register("mm", MythicItemReward())
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&aMythicMobs物品奖励已启用")
+        } else {
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(),"$prefix&4未检测到MythicMobs，相关奖励功能已禁用")
+        }
         MatchingManage.register("equalsName", EqualsName())
         MatchingManage.register("containsLore", ContainsLore())
 
@@ -166,6 +176,9 @@ class Main : JavaPlugin() {
         containsLoreYaml = YamlObject("FenJie/ContainsLore.yml", this)
         containsLoreYaml!!.saveDefaultConfig()
         containsLoreYaml!!.reloadConfig()
+        MythicitemYaml = YamlObject("FenJie/Mythicitem.yml", this)
+        MythicitemYaml!!.saveDefaultConfig()
+        MythicitemYaml!!.reloadConfig()
 
         // 调试模式提示
         if (config.getBoolean("debug-mode", false)) {
