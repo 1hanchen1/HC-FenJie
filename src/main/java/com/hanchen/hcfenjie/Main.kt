@@ -74,7 +74,6 @@ class Main : JavaPlugin() {
         MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a██║  ██║  ██████╗")
         MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a╚═╝  ╚═╝  ╚═════╝")
 
-
         // 调试模式提示
         LoggerUtil.debug("插件已启用，调试模式已开启")
 
