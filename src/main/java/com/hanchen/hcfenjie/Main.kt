@@ -10,6 +10,7 @@ import com.hanchen.hcfenjie.data.reward.RewardManage
 import com.hanchen.hcfenjie.data.reward.imp.CmdReward
 import com.hanchen.hcfenjie.listener.InventoryClickListener
 import com.hanchen.hcfenjie.listener.InventoryCloseListener
+import com.hanchen.hcfenjie.util.MessageUtil
 import com.hanchen.hcfenjie.yaml.YamlObject
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
@@ -72,11 +73,11 @@ class Main : JavaPlugin() {
         reloadSuccessMessage = configYaml!!.getConfig().getString("messages.reload-success")
         openSuccessMessage = configYaml!!.getConfig().getString("messages.open-success")
 
-        inventoryTitle = configYaml!!.getConfig().getString("inventory.title")
+        inventoryTitle = MessageUtil.translateColorCodes(configYaml!!.getConfig().getString("inventory.title"))
         inventoryItemStack = ItemStack(configYaml!!.getConfig().getInt("inventory.itemStack.id"))
         val itemMeta = inventoryItemStack!!.itemMeta as ItemMeta
-        itemMeta.displayName = configYaml!!.getConfig().getString("inventory.itemStack.name")
-        itemMeta.lore = configYaml!!.getConfig().getStringList("inventory.itemStack.lore")
+        itemMeta.displayName = MessageUtil.translateColorCodes(configYaml!!.getConfig().getString("inventory.itemStack.name"))
+        itemMeta.lore = configYaml!!.getConfig().getStringList("inventory.itemStack.lore").map { MessageUtil.translateColorCodes(it) }
         inventoryItemStack!!.itemMeta = itemMeta
         fenJieManFile = File(".//plugins//HC-FenJie//FenJie")
         fenJieFileList = ArrayList()

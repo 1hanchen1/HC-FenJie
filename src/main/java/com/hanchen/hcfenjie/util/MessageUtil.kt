@@ -18,7 +18,7 @@ object MessageUtil {
      * @param input 输入的字符串
      * @return 替换后的字符串
      */
-    private fun translateColorCodes(input: String): String {
+    fun translateColorCodes(input: String): String {
         return input.replace("&".toRegex(), "§")
     }
 }
