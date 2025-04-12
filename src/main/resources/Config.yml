@@ -1,14 +1,21 @@
-#gui界面设置
+# 是否开启调试模式（默认关闭）
+debug-mode: false
+# gui界面设置
 inventory:
-  #gui标题
+  # gui标题
   title: "&a分解界面"
-  #点击分解物品设置
+  # 点击分解物品设置
   itemStack:
+    # 物品id
     id: 145
+    # 物品名称
     name: "&c点击分解"
+    # 物品lore
     lore:
       - "&c点击分解"
       - "&c点击分解"
+# 插件前缀
+prefix: "§e分解系统 §6>> "
 #消息,设置为none将不会发送
 messages:
   success: "&a分解物品成功 &f<number> &a件"
