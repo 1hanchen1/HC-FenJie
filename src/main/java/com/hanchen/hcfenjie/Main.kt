@@ -9,6 +9,7 @@ import com.hanchen.hcfenjie.data.matching.imp.EqualsName
 import com.hanchen.hcfenjie.data.reward.RewardManage
 import com.hanchen.hcfenjie.data.reward.imp.CmdReward
 import com.hanchen.hcfenjie.data.reward.imp.MythicItemReward
+import com.hanchen.hcfenjie.data.reward.imp.NeigeItemReward
 import com.hanchen.hcfenjie.listener.InventoryClickListener
 import com.hanchen.hcfenjie.listener.InventoryCloseListener
 import com.hanchen.hcfenjie.util.LoggerUtil
@@ -37,7 +38,6 @@ class Main : JavaPlugin() {
     var equalsNameYaml: YamlObject? = null
     var MythicitemYaml: YamlObject? = null
     var equalsLoreYaml: YamlObject? = null
-    var equalsItemYaml: YamlObject? = null
     var containsNameYaml: YamlObject? = null
     var containsLoreYaml: YamlObject? = null
     var inventoryTitle: String? = null
@@ -150,9 +150,15 @@ class Main : JavaPlugin() {
         RewardManage.register("cmd", CmdReward())
         if (Bukkit.getPluginManager().isPluginEnabled("MythicMobs")) {
             RewardManage.register("mm", MythicItemReward())
-            MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&aMythicMobs物品奖励已启用")
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&aMythicMobs物品支持已加载")
         } else {
             MessageUtil.sendMessage(Bukkit.getConsoleSender(),"$prefix&4未检测到MythicMobs，相关奖励功能已禁用")
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("NeigeItems")) {
+            RewardManage.register("ni", NeigeItemReward())
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&aNeigeItems物品支持已加载")
+        } else {
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(),"$prefix&4未检测到NeigeItems，相关奖励功能已禁用")
         }
         MatchingManage.register("equalsName", EqualsName())
         MatchingManage.register("containsLore", ContainsLore())

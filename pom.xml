@@ -140,5 +140,13 @@
           <scope>system</scope>
           <systemPath>${project.basedir}/.lib/MythicMobs-4.11.jar</systemPath>
       </dependency>
+      <dependency>
+          <groupId>pers.neige.neigeitems</groupId>
+          <artifactId>NeigeItems</artifactId>
+          <version>1.21.55</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/.lib/NeigeItems-1.21.55-api.jar</systemPath>
+      </dependency>
+
   </dependencies>
 </project>

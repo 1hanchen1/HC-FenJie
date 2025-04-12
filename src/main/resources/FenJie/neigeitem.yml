@@ -7,5 +7,5 @@ matching:
   - "containsLore<->§a模糊物品lore"
 #奖励设置
 reward:
-  - "mm<->物品5<->3"
-  - "mm<->物品6<->4"
+  - "ni<->物品7" # 即给一个
+  - "ni<->物品8<->5"
