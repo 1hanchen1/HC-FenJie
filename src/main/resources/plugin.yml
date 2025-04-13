@@ -2,7 +2,7 @@ name: HC-FenJie
 version: '${project.version}'
 main: com.hanchen.hcfenjie.Main
 authors: [hanchen]
-softdepend: [MythicMobs]
+softdepend: [MythicMobs, NeigeItems]
 commands:
   hcfj:
     aliases:

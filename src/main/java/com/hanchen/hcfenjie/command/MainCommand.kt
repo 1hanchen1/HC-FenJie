@@ -40,7 +40,7 @@ class MainCommand : CommandExecutor, TabCompleter {
                 "reload" -> handleReloadCommand(sender) // 处理重载命令
                 else -> MessageUtil.sendFormattedMessage(
                     sender,
-                    "unknown-command",
+                    "system.unknown-command",
                     "command" to label
                 )
             }
@@ -58,12 +58,13 @@ class MainCommand : CommandExecutor, TabCompleter {
 
         // 使用消息键列表动态生成帮助信息
         val messageKeys = listOfNotNull(
-            "help-header",
-            "help-help",
-            "help-open",
-            "help-reload".takeIf { sender.hasPermission("hcfj.reload") },
-            "help-footer",
-            "help-version"  // 新增版本信息
+            "help.header",
+            "help.help",
+            "help.open",
+            "help.reload".takeIf { sender.hasPermission("hcfj.reload") },
+            "help.version",  // 新增版本信息
+            "help.footer"
+
         )
 
         messageKeys.forEach { key ->
@@ -86,13 +87,13 @@ class MainCommand : CommandExecutor, TabCompleter {
 
         // 检查发送者是否为玩家
         if (sender !is Player) {
-            MessageUtil.sendFormattedMessage(sender, "not-player")
+            MessageUtil.sendFormattedMessage(sender, "system.player-only")
             return
         }
 
         MessageUtil.sendFormattedMessage(
             sender,
-            if (sender.hasPermission("hcfj.open")) "open-success" else "no-permission",
+            if (sender.hasPermission("hcfj.open")) "decomposition.success" else "system.no-permission",
             "permission" to "hcfj.open"
         ).run {
             InventoryUtil.openInventory(sender)
@@ -110,7 +111,7 @@ class MainCommand : CommandExecutor, TabCompleter {
         if (!sender.hasPermission("hcfj.reload")) {
             MessageUtil.sendFormattedMessage(
                 sender,
-                "no-permission",
+                "system.no-permission",
                 "permission" to "hcfj.reload"
             )
             return
@@ -121,7 +122,7 @@ class MainCommand : CommandExecutor, TabCompleter {
             initDefaultYaml()
             initFenJie()
             ConfigManager.reload()
-            MessageUtil.sendFormattedMessage(sender, "reload-success")
+            MessageUtil.sendFormattedMessage(sender, "system.reloaded")
         }
     }
 

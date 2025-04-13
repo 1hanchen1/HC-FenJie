@@ -31,14 +31,18 @@ object MessageUtil {
         }
 
         // 使用安全类型转换
+        // 分两步处理占位符
         placeholders.forEach { (key, value) ->
-            formatted = formatted.replace(
-                "%$key%",
-                value.toString() // 强制转换为String
-            )
+            formatted = formatted.replace("%$key%", value.toString())
         }
 
-        return translateAdvancedColorCodes(formatted)
+        // 处理多行消息中的颜色代码
+        return formatted.lineSequence()
+            .map { line -> translateAdvancedColorCodes(line) }
+            .joinToString("\n") { line ->
+                // 确保每行保留颜色代码继承
+                if (line.startsWith("§")) line else "§r$line"
+            }
     }
     // 修改正则表达式以正确匹配十六进制颜色代码
     private val COLOR_CODE_REGEX = Regex("&([0-9a-fk-orxA-FK-ORX]|x(&[0-9a-fA-F]){6})")
@@ -70,9 +74,7 @@ object MessageUtil {
                 try {
                     sender.sendMessage(formatted)
                     // 调试模式提示
-                    if (Main.instance.config.getBoolean("debug-mode", false)) {
-                        LoggerUtil.debug("发送消息给 ${sender.name}: $formatted")
-                    }
+                    LoggerUtil.debug("发送消息给 ${sender.name}: $formatted")
                 } catch (e: Exception) {
                     LoggerUtil.error("消息发送失败: ${e.message} 接收者: ${sender.name}")
                 }
@@ -89,13 +91,18 @@ object MessageUtil {
      * @return 转换后的消息（自动添加§前缀）
      */
     fun translateAdvancedColorCodes(input: String): String {
-        // 修正后的正则表达式替换逻辑
+        var lastColorCode = ""
         return COLOR_CODE_REGEX.replace(input) { match ->
-            when (val code = match.groupValues[1].lowercase()) {
-                "x" -> parseHexColor(match)
-                else -> "§$code"
+            val code = match.groupValues[1].lowercase()
+            when (code) {
+                "x" -> parseHexColor(match).also { lastColorCode = it }
+                else -> {
+                    val translated = "§$code"
+                    lastColorCode = translated
+                    translated
+                }
             }
-        }
+        }.replace("\n", "\n$lastColorCode") // 自动继承上一行颜色
     }
 
     /**
@@ -107,9 +114,7 @@ object MessageUtil {
         val formatted = translateAdvancedColorCodes(message)
         senders.forEach { sendMessage(it, formatted) }
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("广播消息: $formatted")
-        }
+        LoggerUtil.debug("广播消息: $formatted")
     }
 
     /**

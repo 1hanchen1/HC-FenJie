@@ -19,16 +19,13 @@ object RewardManage {
     fun register(type: String, reward: Reward) {
         rewardMap.computeIfAbsent(type.lowercase()) {
             // 调试模式提示
-            if (Main.instance.config.getBoolean("debug-mode", false)) {
-                LoggerUtil.debug("注册奖励类型: $type")
-            }
+            LoggerUtil.debug("注册奖励类型: $type")
+
             LoggerUtil.info("注册奖励类型: $type")
             reward
         } ?: run {
             // 调试模式提示
-            if (Main.instance.config.getBoolean("debug-mode", false)) {
-                LoggerUtil.debug("奖励类型 $type 已存在，跳过重复注册")
-            }
+            LoggerUtil.debug("奖励类型 $type 已存在，跳过重复注册")
             LoggerUtil.warn("奖励类型 $type 已存在，跳过重复注册")
         }
     }
@@ -43,9 +40,7 @@ object RewardManage {
             if (it == null) {
                 LoggerUtil.warn("未注册的奖励类型: $type")
                 // 调试模式提示
-                if (Main.instance.config.getBoolean("debug-mode", false)) {
-                    LoggerUtil.debug("尝试获取未注册的奖励类型: $type")
-                }
+                LoggerUtil.debug("尝试获取未注册的奖励类型: $type")
             }
         }
     }
@@ -59,9 +54,8 @@ object RewardManage {
     fun clear() {
         rewardMap.clear()
         // 调试模式提示
-        if (Main.instance.config.getBoolean("debug-mode", false)) {
-            LoggerUtil.debug("已清空所有奖励类型")
-        }
+        LoggerUtil.debug("已清空所有奖励类型")
+
         LoggerUtil.info("已清空所有奖励类型")
     }
 }

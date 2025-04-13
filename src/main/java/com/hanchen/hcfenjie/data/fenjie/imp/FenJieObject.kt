@@ -1,6 +1,5 @@
 package com.hanchen.hcfenjie.data.fenjie.imp
 
-import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.data.fenjie.FenJie
 import com.hanchen.hcfenjie.data.matching.MatchingManage
 import com.hanchen.hcfenjie.data.reward.RewardManage
@@ -88,7 +87,7 @@ class FenJieObject(
                     // 使用配置的未知奖励类型消息
                     MessageUtil.sendFormattedMessage(
                         player,
-                        "unknown-reward-type", // 配置键
+                        "rewards.unknown-type", // 配置键
                         "type" to type          // 占位符参数
                     )
                 }
@@ -96,7 +95,7 @@ class FenJieObject(
                 // 使用配置的奖励格式错误消息
                 MessageUtil.sendFormattedMessage(
                     player,
-                    "invalid-reward-format",   // 配置键
+                    "rewards.invalid-format",   // 配置键
                     "rewardStr" to rewardStr    // 占位符参数
                 )
             }

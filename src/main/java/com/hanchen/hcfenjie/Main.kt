@@ -43,13 +43,6 @@ class Main : JavaPlugin() {
     private var Example2Yaml: YamlObject? = null
     var inventoryTitle: String? = null
     var inventoryItemStack: ItemStack? = null
-
-    var noPermissionMessage: String? = null
-    var notAPlayerMessage: String? = null
-    var reloadSuccessMessage: String? = null
-    var openSuccessMessage: String? = null
-    var unknownCommandMessage: String? = null
-    var commandErrorMessage: String? = null
     /**
      * 插件启用时的初始化逻辑
      */
@@ -93,20 +86,12 @@ class Main : JavaPlugin() {
      * 初始化分解逻辑
      */
     fun initFenJie() {
-        // 加载消息配置
-        noPermissionMessage = configYaml!!.getConfig().getString("messages.no-permission")
-        notAPlayerMessage = configYaml!!.getConfig().getString("messages.not-a-player")
-        reloadSuccessMessage = configYaml!!.getConfig().getString("messages.reload-success")
-        openSuccessMessage = configYaml!!.getConfig().getString("messages.open-success")
-        unknownCommandMessage = configYaml!!.getConfig().getString("messages.unknownCommandMessage")
-        commandErrorMessage = configYaml!!.getConfig().getString("messages.command-error")
-
         // 加载库存配置
         inventoryTitle = MessageUtil.translateAdvancedColorCodes(configYaml!!.getConfig().getString("inventory.title"))
-        inventoryItemStack = ItemStack(configYaml!!.getConfig().getInt("inventory.itemStack.id"))
+        inventoryItemStack = ItemStack(configYaml!!.getConfig().getInt("inventory.decompose-button.material-id"))
         val itemMeta = inventoryItemStack!!.itemMeta as ItemMeta
-        itemMeta.displayName = MessageUtil.translateAdvancedColorCodes(configYaml!!.getConfig().getString("inventory.itemStack.name"))
-        itemMeta.lore = configYaml!!.getConfig().getStringList("inventory.itemStack.lore").map { MessageUtil.translateAdvancedColorCodes(it) }
+        itemMeta.displayName = MessageUtil.translateAdvancedColorCodes(configYaml!!.getConfig().getString("inventory.decompose-button.name"))
+        itemMeta.lore = configYaml!!.getConfig().getStringList("inventory.decompose-button.lore").map { MessageUtil.translateAdvancedColorCodes(it) }
         inventoryItemStack!!.itemMeta = itemMeta
 
         // 加载分解文件
@@ -124,7 +109,7 @@ class Main : JavaPlugin() {
             val yaml = YamlConfiguration.loadConfiguration(file)
             val fenJieName = yaml.getString("name")
             val fenJieChange = yaml.getDouble("change")
-            val rewardList = yaml.getStringList("reward")
+            val rewardList = yaml.getStringList("rewards")
             val matchingList = yaml.getStringList("matching")
             val fenJieObject = FenJieObject(fenJieName, fenJieChange, matchingList, rewardList)
             FenJieManage.register(fenJieName, fenJieObject)

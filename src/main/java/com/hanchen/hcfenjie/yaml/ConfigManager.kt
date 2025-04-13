@@ -29,7 +29,13 @@ object ConfigManager {
      * 热重载配置
      */
     fun reload() {
-        messagePrefix = config?.getString("messages.prefix", "&e分解系统 &6>> ")?.replace('&', '§') ?: ""
+        // 双重验证初始化状态
+        require(::plugin.isInitialized) { "ConfigManager.plugin 必须在 reload() 前初始化" }
+
+        plugin.reloadConfig()
+        messagePrefix = plugin.config.getString("messages.prefix", "&e分解系统 &6>> ")
+            ?.let { translateColorCodes(it) } ?: ""
+
         LoggerUtil.info("消息前缀加载: '$messagePrefix'")
         configFile = File(plugin.dataFolder, "Config.yml").also {
             if (!it.exists()) plugin.saveResource("Config.yml", false)
@@ -40,5 +46,9 @@ object ConfigManager {
         // 更新动态配置
         debugMode = config?.getBoolean("debug-mode", false) ?: false
         LoggerUtil.info("配置已重载 | 调试模式: ${if (debugMode) "开启" else "关闭"}")
+    }
+
+    private fun translateColorCodes(input: String): String {
+        return input.replace('&', '§')
     }
 }

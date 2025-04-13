@@ -1,67 +1,94 @@
-# 是否开启调试模式（默认关闭）
-debug-mode: false
-# gui界面设置
-inventory:
-  # gui标题
-  title: "&a分解界面"
-  # 点击分解物品设置
-  itemStack:
-    # 物品id
-    id: 145
-    # 物品名称
-    name: "&c点击分解"
-    # 物品lore
-    lore:
-      - "&c点击分解"
-      - "&c点击分解"
+# ========================
+#      瀚辰分解插件配置
+# 版本: 1.0.0 | 作者: HanChen
+# ========================
 
-#消息,设置为none将不会发送
+# ===== 调试模式设置 =====
+# 开启后将显示详细操作日志（建议仅开发时开启）
+debug-mode: false
+
+# ===== 界面设置 =====
+inventory:
+  # GUI界面标题（支持颜色代码）
+  title: "&a分解界面"
+
+  # 分解按钮配置
+  decompose-button:
+    # 物品材质ID（1.13+建议使用材质名称如"ANVIL"）
+    material-id: 145
+    # 物品显示名称（支持颜色代码）
+    name: "&c点击分解"
+    # 物品描述（每行需用 - 开头）
+    lore:
+      - "&7将需要分解的物品放入上方槽位"
+      - "&c点击开始分解"
+
+# ===== 消息系统配置 =====
 messages:
-  # ===== 全局设置 =====
-  prefix: " &e分解系统 &6>>"
+  # ===== 全局消息设置 =====
+  prefix: " &e分解系统 &6>>"  # 所有消息的默认前缀（设为空可禁用）
 
   # ===== 帮助菜单 =====
-  help-header: "&8&m┏━━━━━━━━━&r &6[&e瀚辰分解&6] &8&m━━━━━━━━━━━"
-  help-help: "&8&m┃ &b/fj help &6显示帮助信息"
-  help-open: "&8&m┃ &b/fj open &6打开分解界面"
-  help-reload: "&8&m┃ &b/fj reload &6重载配置文件"
-  help-version: "&8&m┃ &7版本: &e%version%"
-  help-footer: "&8&m┖━━━━━━━━━━&r &6[&e瀚辰分解&6] &8&m━━━━━━━━━━━"
+  help:
+    header: "&8&m┏━━━━━━━━━&r &6[&e瀚辰分解&6] &8&m━━━━━━━━━━━"
+    help: "&8&m┃ &b/fj help &6显示帮助信息"
+    open: "&8&m┃ &b/fj open &6打开分解界面"
+    reload: "&8&m┃ &b/fj reload &6重载配置文件"
+    version: "&8&m┃ &7版本: &e%version%"
+    footer: "&8&m┖━━━━━━━━━━&r &6[&e瀚辰分解&6] &8&m━━━━━━━━━━━"
 
-  # ===== 分解消息 =====
-  decomp-success: "%prefix% &a成功分解了 &e%number% &a个物品"
-  decomp-failed: "%prefix% &c有 &4%number% &c个物品分解失败"
-  item-not-decomposable: "&c%item% 不能被分解！"
-  decomp-result: "%rate_color%%prefix% &7分解结果：&a成功 %success% 次 &7| &c失败 %failed% 次 &7(成功率：%rate_color%%rate%&7)"
+  # ===== 分解流程消息 =====
+  decomposition:
+    success: "%prefix% &a成功分解了 &e%number% &a个物品"  # 成功提示
+    failed: "%prefix% &c有 &4%number% &c个物品分解失败"   # 失败提示
+    invalid-item: "&c%item% 不能被分解！"                # 不可分解提示
 
-  # ===== 通用消息 =====
-  unknown-command: "%prefix% &c未知命令: &f%command%"
-  not-player: "%prefix% &c只有玩家可以执行此命令"
-  no-permission: "%prefix% &c需要权限 &4%permission% &c执行此操作"
-  open-success: "%prefix% &a你成功打开了分解界面"
-  reload-success: "%prefix% &a配置重载完成，耗时 &e%time%ms"
+    # 高级结果模板（支持多行显示）
+    result:
+      - "%rate_color%┎━━━━━━━━━━━━━━━━━━"       # 顶部边框
+      - "%prefix%&a成功: &e%success%次"         # 成功次数
+      - "%prefix%&c失败: &4%failed%次"          # 失败次数
+      - "%rate_color%┖━━━━━━━━━━━━━━━━━━"       # 底部边框
+      - "%prefix%&6成功率: %rate_color%%rate%&6" # 成功率（自动颜色）
 
-  # ===== 奖励错误 =====
-  # 未知奖励类型
-  unknown-reward-type: "%prefix% &c未知的奖励类型: &f%type%"
-  # 使用配置的奖励格式错误消息
-  invalid-reward-format: "%prefix% &c奖励配置格式错误: &f%rewardStr%"
+  # ===== 通用系统消息 =====
+  system:
+    unknown-command: "%prefix% &c未知命令: &f%command%"      # 未知命令提示
+    player-only: "%prefix% &c只有玩家可以执行此命令"          # 控制台执行提示
+    no-permission: "%prefix% &c需要权限 &4%permission% &c执行此操作" # 权限不足提示
+    interface-opened: "%prefix% &a你成功打开了分解界面"       # 界面打开成功提示
+    reloaded: "%prefix% &a配置重载完成，耗时 &e%time%ms"     # 重载完成提示（%time%自动替换）
+    command-error: "&c命令执行失败！&7(指令: &f%command%&7) &c错误码: &4%error_code%" # 错误模板
 
-  # ===== 调试模板 =====
-  "debug-command-execute": "&7[调试] 执行命令: &f%command%"
+  # ===== 奖励系统错误 =====
+  rewards:
+    unknown-type: "%prefix% &c未知的奖励类型: &f%type%"      # 未知奖励类型提示
+    invalid-format: "%prefix% &c奖励配置格式错误: &f%rewardStr%" # 格式错误提示
 
-  # 分解成功
-  success: "&a分解物品成功 &f<number> &a件"
-  # 分解失败
-  failed: "&c分解物品失败 &f<number> &c件"
-  # 无法分解
-  nodecompose: "&c该物品无法分解！"
+  # ===== 调试信息模板 =====
+  debug:
+    command-execute: "&7[调试] 执行命令: &f%command%"
 
-  # 玩家执行
-  not-a-player: "&c这个命令只能由玩家执行！"
+# ========================
+#   占位符说明
+#   %prefix%    - 全局消息前缀
+#   %version%   - 插件版本号
+#   %number%    - 数字占位符
+#   %item%      - 物品名称
+#   %rate%      - 成功率百分比（格式: 99.9%）
+#   %rate_color% - 动态颜色代码（基于成功率）
+#   %time%      - 时间数值（单位: 毫秒）
+#   %command%   - 输入的命令内容
+#   %error_code% - 错误代码编号
+# ========================
 
-  command-error: "&c命令执行失败！&7(指令: &f%command%&7) &c错误码: &4%error_code%"
-
-
-
-
+# ===== 颜色代码说明 =====
+#  &0 - 黑色   &1 - 深蓝   &2 - 深绿
+#  &3 - 湖蓝   &4 - 深红   &5 - 紫色
+#  &6 - 金色   &7 - 灰色   &8 - 深灰
+#  &9 - 蓝色   &a - 绿色   &b - 天蓝
+#  &c - 红色   &d - 粉红   &e - 黄色
+#  &f - 白色   &k - 随机   &l - 加粗
+#  &m - 删除线 &n - 下划线 &o - 斜体
+#  &r - 重置样式
+# ========================

@@ -51,7 +51,7 @@ class CmdReward : Reward {
             LoggerUtil.error("命令执行失败 [$finalCommand] 原因: ${e.stackTraceToString()}")
             MessageUtil.sendFormattedMessage(
                 player,
-                "command-error",
+                "system.command-error",
                 "command" to finalCommand,
                 "error_code" to "0xCMD-${System.currentTimeMillis() % 10000}"
             )

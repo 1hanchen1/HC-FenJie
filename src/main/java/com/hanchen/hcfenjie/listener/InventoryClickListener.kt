@@ -56,7 +56,7 @@ class InventoryClickListener : Listener {
                 player.updateInventory()
                 MessageUtil.sendFormattedMessage(
                     player,
-                    "item-not-decomposable",
+                    "decomposition.invalid-item",
                     "item" to (item.type ?: "未知物品") // 直接使用枚举转换
                 )
             }
@@ -98,20 +98,21 @@ class InventoryClickListener : Listener {
         // 新增：计算动态颜色
         val total = successCount + failedCount
         val successRate = if (total > 0) successCount.toDouble() / total else 0.0
+        // 动态颜色逻辑（根据成功率）
         val rateColor = when {
-            successRate >= 0.7 -> "&a" // 绿色
-            successRate >= 0.3 -> "&e" // 黄色
-            else -> "&c"               // 红色
+            successRate >= 0.7 -> "&a"
+            successRate >= 0.3 -> "&e"
+            else -> "&c"
         }
 
         // 合并消息发送
         MessageUtil.sendFormattedMessage(
             player,
-            "decomp-result",
-            "success" to successCount, // 直接传递Int类型
+            "decomposition.result",
+            "success" to successCount,
             "failed" to failedCount,
             "rate" to "%.1f%%".format(successRate * 100),
-            "rate_color" to rateColor
+            "rate_color" to rateColor // 传递动态颜色
         )
 
         LoggerUtil.debug("分解完成 | 成功: $successCount 次 | 失败: $failedCount 次")
