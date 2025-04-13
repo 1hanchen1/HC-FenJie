@@ -1,7 +1,9 @@
 package com.hanchen.hcfenjie.data.reward.imp
 
+import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.data.reward.Reward
 import com.hanchen.hcfenjie.util.LoggerUtil
+import com.hanchen.hcfenjie.util.MessageUtil
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -46,8 +48,13 @@ class CmdReward : Reward {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand)
             LoggerUtil.debug("玩家 ${player.name} 执行命令成功: $finalCommand")
         } catch (e: Exception) {
-            LoggerUtil.error("命令执行失败 [${finalCommand}] 原因: ${e.stackTraceToString()}")
-            player.sendMessage("§c命令执行失败，请联系管理员并提供错误码: 0xCMD-${System.currentTimeMillis() % 10000}")
+            LoggerUtil.error("命令执行失败 [$finalCommand] 原因: ${e.stackTraceToString()}")
+            MessageUtil.sendFormattedMessage(
+                player,
+                "command-error",
+                "command" to finalCommand,
+                "error_code" to "0xCMD-${System.currentTimeMillis() % 10000}"
+            )
         }
     }
 

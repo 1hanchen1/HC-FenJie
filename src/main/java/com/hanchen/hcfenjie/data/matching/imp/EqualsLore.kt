@@ -12,20 +12,15 @@ import org.bukkit.inventory.ItemStack
 class EqualsLore : Matching {
     override fun isMatching(itemStack: ItemStack, args: String): Boolean {
         val meta = itemStack.itemMeta ?: return false
-        val itemLore = meta.lore ?: return args.isBlank() // 当配置Lore为空时匹配无Lore物品
-
-        // 分割配置中的Lore（按行分割）
-        val configLore = args.split("\\n").map { MessageUtil.translateAdvancedColorCodes(it) }
-
-        return itemLore == configLore.also { result ->
-            val logMsg = buildString {
-                append("EqualsLore匹配结果: $result")
-                append("\n配置Lore:")
-                configLore.forEach { append("\n  - '$it'") }
-                append("\n物品Lore:")
-                itemLore.forEach { append("\n  - '$it'") }
-            }
-            LoggerUtil.debug(logMsg)
+        // 提前转换颜色代码
+        val configLore = args.split("\\n").map {
+            MessageUtil.translateAdvancedColorCodes(it)
         }
+
+        val itemLore = meta.lore?.map {
+            MessageUtil.translateAdvancedColorCodes(it)
+        } ?: return configLore.isEmpty()
+
+        return itemLore == configLore
     }
 }

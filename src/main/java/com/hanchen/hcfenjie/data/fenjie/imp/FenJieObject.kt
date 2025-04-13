@@ -1,9 +1,11 @@
 package com.hanchen.hcfenjie.data.fenjie.imp
 
+import com.hanchen.hcfenjie.Main
 import com.hanchen.hcfenjie.data.fenjie.FenJie
 import com.hanchen.hcfenjie.data.matching.MatchingManage
 import com.hanchen.hcfenjie.data.reward.RewardManage
 import com.hanchen.hcfenjie.util.LoggerUtil
+import com.hanchen.hcfenjie.util.MessageUtil
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -82,9 +84,22 @@ class FenJieObject(
 
         fenJieRewardList.forEach { rewardStr ->
             rewardStr.split("<->", limit = 2).takeIf { it.size == 2 }?.let { (type, args) ->
-                RewardManage.getReward(type)?.exeReward(player, args)
-                    ?: player.sendMessage("§c未知奖励类型: $type")
-            } ?: player.sendMessage("§c奖励配置格式错误: $rewardStr")
+                RewardManage.getReward(type)?.exeReward(player, args) ?: run {
+                    // 使用配置的未知奖励类型消息
+                    MessageUtil.sendFormattedMessage(
+                        player,
+                        "unknown-reward-type", // 配置键
+                        "type" to type          // 占位符参数
+                    )
+                }
+            } ?: run {
+                // 使用配置的奖励格式错误消息
+                MessageUtil.sendFormattedMessage(
+                    player,
+                    "invalid-reward-format",   // 配置键
+                    "rewardStr" to rewardStr    // 占位符参数
+                )
+            }
         }
     }
 

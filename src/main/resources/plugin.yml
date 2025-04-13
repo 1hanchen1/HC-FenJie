@@ -10,4 +10,6 @@ commands:
 permissions:
   hcfj.open:
     description: "打开分解界面"
+  hcfj,reload:
+    description: 允许重载插件配置
     default: op

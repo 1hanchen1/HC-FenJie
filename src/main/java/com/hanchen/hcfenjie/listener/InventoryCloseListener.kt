@@ -16,7 +16,7 @@ class InventoryCloseListener : Listener {
     @EventHandler
     fun onInventoryClose(event: InventoryCloseEvent) {
         val inventory = event.inventory
-        val plugin = Main.instance ?: return
+        val plugin = Main.instance
         val expectedTitle = plugin.inventoryTitle ?: return
 
         // 安全类型转换和空值检查

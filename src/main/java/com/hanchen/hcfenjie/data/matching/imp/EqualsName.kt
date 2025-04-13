@@ -2,6 +2,7 @@ package com.hanchen.hcfenjie.data.matching.imp
 
 import com.hanchen.hcfenjie.data.matching.Matching
 import com.hanchen.hcfenjie.util.LoggerUtil
+import com.hanchen.hcfenjie.util.MessageUtil
 import org.bukkit.inventory.ItemStack
 
 /**
@@ -17,11 +18,12 @@ class EqualsName : Matching {
      */
     override fun isMatching(itemStack: ItemStack, args: String): Boolean {
         val meta = itemStack.itemMeta ?: return false
-        val result = meta.hasDisplayName() && meta.displayName.equals(args, ignoreCase = true)
+        // 转换颜色代码后比较
+        val processedArgs = MessageUtil.translateAdvancedColorCodes(args)
+        val itemName = MessageUtil.translateAdvancedColorCodes(meta.displayName ?: "")
 
-        // 调试模式提示
-        LoggerUtil.debug("检查物品名称是否相等: 物品=${itemStack.type}, 名称=${meta.displayName}, 目标名称=$args, 结果=$result")
-
-        return result
+        return itemName.equals(processedArgs, ignoreCase = true).also { result ->
+            LoggerUtil.debug("EqualsName匹配: 物品名=$itemName 目标=$processedArgs 结果=$result")
+        }
     }
 }

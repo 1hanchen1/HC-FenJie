@@ -16,6 +16,8 @@ import com.hanchen.hcfenjie.listener.InventoryClickListener
 import com.hanchen.hcfenjie.listener.InventoryCloseListener
 import com.hanchen.hcfenjie.util.LoggerUtil
 import com.hanchen.hcfenjie.util.MessageUtil
+import com.hanchen.hcfenjie.yaml.ConfigManager
+import com.hanchen.hcfenjie.yaml.ConfigManager.messagePrefix
 import com.hanchen.hcfenjie.yaml.YamlObject
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
@@ -42,37 +44,31 @@ class Main : JavaPlugin() {
     var inventoryTitle: String? = null
     var inventoryItemStack: ItemStack? = null
 
-    var successMessage: String? = null
-    var failedMessage: String? = null
     var noPermissionMessage: String? = null
     var notAPlayerMessage: String? = null
-    var helpHeaderMessage: String? = null
-    var helpCommandHelpMessage: String? = null
-    var helpCommandOpenMessage: String? = null
-    var helpCommandReloadMessage: String? = null
     var reloadSuccessMessage: String? = null
     var openSuccessMessage: String? = null
     var unknownCommandMessage: String? = null
-    var prefix: String? = null
-    var nodecompose: String? = null
-
+    var commandErrorMessage: String? = null
     /**
      * 插件启用时的初始化逻辑
      */
     override fun onEnable() {
         instance = this
+        ConfigManager.plugin = this
+        ConfigManager.reload()
         initDefaultYaml()
         initFenJie()
         Bukkit.getPluginManager().registerEvents(InventoryClickListener(), this)
         Bukkit.getPluginManager().registerEvents(InventoryCloseListener(), this)
         getCommand("hcfj")!!.executor = MainCommand()
 
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a██╗  ██╗  ██████╗")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a██║  ██║ ██╔════╝")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a███████║ ██║")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a██╔══██║ ██║")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a██║  ██║  ██████╗")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&a╚═╝  ╚═╝  ╚═════╝")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&a██╗  ██╗  ██████╗")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&a██║  ██║ ██╔════╝")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&a███████║ ██║")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&a██╔══██║ ██║")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&a██║  ██║  ██████╗")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&a╚═╝  ╚═╝  ╚═════╝")
 
         // 调试模式提示
         LoggerUtil.debug("插件已启用，调试模式已开启")
@@ -83,12 +79,12 @@ class Main : JavaPlugin() {
      * 插件禁用时的清理逻辑
      */
     override fun onDisable() {
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&4██╗  ██╗  ██████╗")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&4██║  ██║ ██╔════╝")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&4███████║ ██║")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&4██╔══██║ ██║")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&4██║  ██║  ██████╗")
-        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&4╚═╝  ╚═╝  ╚═════╝")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&4██╗  ██╗  ██████╗")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&4██║  ██║ ██╔════╝")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&4███████║ ██║")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&4██╔══██║ ██║")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&4██║  ██║  ██████╗")
+        MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&4╚═╝  ╚═╝  ╚═════╝")
         // 调试模式提示
         LoggerUtil.debug("插件已禁用，调试模式已关闭")
     }
@@ -98,19 +94,12 @@ class Main : JavaPlugin() {
      */
     fun initFenJie() {
         // 加载消息配置
-        prefix = configYaml!!.getConfig().getString("prefix")
-        successMessage = configYaml!!.getConfig().getString("messages.success")
-        failedMessage = configYaml!!.getConfig().getString("messages.failed")
         noPermissionMessage = configYaml!!.getConfig().getString("messages.no-permission")
         notAPlayerMessage = configYaml!!.getConfig().getString("messages.not-a-player")
-        helpHeaderMessage = configYaml!!.getConfig().getString("messages.help-header")
-        helpCommandHelpMessage = configYaml!!.getConfig().getString("messages.help-command-help")
-        helpCommandOpenMessage = configYaml!!.getConfig().getString("messages.help-command-open")
-        helpCommandReloadMessage = configYaml!!.getConfig().getString("messages.help-command-reload")
         reloadSuccessMessage = configYaml!!.getConfig().getString("messages.reload-success")
         openSuccessMessage = configYaml!!.getConfig().getString("messages.open-success")
         unknownCommandMessage = configYaml!!.getConfig().getString("messages.unknownCommandMessage")
-        nodecompose = configYaml!!.getConfig().getString("messages.nodecompose")
+        commandErrorMessage = configYaml!!.getConfig().getString("messages.command-error")
 
         // 加载库存配置
         inventoryTitle = MessageUtil.translateAdvancedColorCodes(configYaml!!.getConfig().getString("inventory.title"))
@@ -145,15 +134,15 @@ class Main : JavaPlugin() {
         RewardManage.register("cmd", CmdReward())
         if (Bukkit.getPluginManager().isPluginEnabled("MythicMobs")) {
             RewardManage.register("mm", MythicItemReward())
-            MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&aMythicMobs物品支持已加载")
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&aMythicMobs物品支持已加载")
         } else {
-            MessageUtil.sendMessage(Bukkit.getConsoleSender(),"$prefix&4未检测到MythicMobs，相关奖励功能已禁用")
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(),"$messagePrefix&4未检测到MythicMobs，相关奖励功能已禁用")
         }
         if (Bukkit.getPluginManager().isPluginEnabled("NeigeItems")) {
             RewardManage.register("ni", NeigeItemReward())
-            MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$prefix&aNeigeItems物品支持已加载")
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(), "$messagePrefix&aNeigeItems物品支持已加载")
         } else {
-            MessageUtil.sendMessage(Bukkit.getConsoleSender(),"$prefix&4未检测到NeigeItems，相关奖励功能已禁用")
+            MessageUtil.sendMessage(Bukkit.getConsoleSender(),"$messagePrefix&4未检测到NeigeItems，相关奖励功能已禁用")
         }
         MatchingManage.register("equalsName", EqualsName())
         MatchingManage.register("containsLore", ContainsLore())

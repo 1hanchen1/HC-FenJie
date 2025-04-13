@@ -17,7 +17,7 @@ class InventoryClickListener : Listener {
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
         val inventory = event.inventory
-        val title = Main.instance?.inventoryTitle ?: return
+        val title = Main.instance.inventoryTitle ?: return
 
         // 仅处理分解界面
         if (inventory.type != InventoryType.CHEST || inventory.title != title) return
@@ -54,7 +54,11 @@ class InventoryClickListener : Listener {
             event.isCancelled = !canPlace
             if (!canPlace) {
                 player.updateInventory()
-                MessageUtil.sendMessage(player, Main.instance.nodecompose)
+                MessageUtil.sendFormattedMessage(
+                    player,
+                    "item-not-decomposable",
+                    "item" to (item.type ?: "未知物品") // 直接使用枚举转换
+                )
             }
         }
     }
@@ -91,15 +95,24 @@ class InventoryClickListener : Listener {
             }
         }
 
-        // 使用MessageUtil发送配置中的消息
-        Main.instance?.apply {
-            successMessage?.takeIf { it != "none" }?.let {
-                MessageUtil.sendMessage(player, it.replace("<number>", successCount.toString()))
-            }
-            failedMessage?.takeIf { it != "none" }?.let {
-                MessageUtil.sendMessage(player, it.replace("<number>", failedCount.toString()))
-            }
+        // 新增：计算动态颜色
+        val total = successCount + failedCount
+        val successRate = if (total > 0) successCount.toDouble() / total else 0.0
+        val rateColor = when {
+            successRate >= 0.7 -> "&a" // 绿色
+            successRate >= 0.3 -> "&e" // 黄色
+            else -> "&c"               // 红色
         }
+
+        // 合并消息发送
+        MessageUtil.sendFormattedMessage(
+            player,
+            "decomp-result",
+            "success" to successCount, // 直接传递Int类型
+            "failed" to failedCount,
+            "rate" to "%.1f%%".format(successRate * 100),
+            "rate_color" to rateColor
+        )
 
         LoggerUtil.debug("分解完成 | 成功: $successCount 次 | 失败: $failedCount 次")
     }

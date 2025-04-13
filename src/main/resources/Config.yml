@@ -14,18 +14,54 @@ inventory:
     lore:
       - "&c点击分解"
       - "&c点击分解"
-# 插件前缀
-prefix: "§e分解系统 §6>> "
+
 #消息,设置为none将不会发送
 messages:
+  # ===== 全局设置 =====
+  prefix: " &e分解系统 &6>>"
+
+  # ===== 帮助菜单 =====
+  help-header: "&8&m┏━━━━━━━━━&r &6[&e瀚辰分解&6] &8&m━━━━━━━━━━━"
+  help-help: "&8&m┃ &b/fj help &6显示帮助信息"
+  help-open: "&8&m┃ &b/fj open &6打开分解界面"
+  help-reload: "&8&m┃ &b/fj reload &6重载配置文件"
+  help-version: "&8&m┃ &7版本: &e%version%"
+  help-footer: "&8&m┖━━━━━━━━━━&r &6[&e瀚辰分解&6] &8&m━━━━━━━━━━━"
+
+  # ===== 分解消息 =====
+  decomp-success: "%prefix% &a成功分解了 &e%number% &a个物品"
+  decomp-failed: "%prefix% &c有 &4%number% &c个物品分解失败"
+  item-not-decomposable: "&c%item% 不能被分解！"
+  decomp-result: "%rate_color%%prefix% &7分解结果：&a成功 %success% 次 &7| &c失败 %failed% 次 &7(成功率：%rate_color%%rate%&7)"
+
+  # ===== 通用消息 =====
+  unknown-command: "%prefix% &c未知命令: &f%command%"
+  not-player: "%prefix% &c只有玩家可以执行此命令"
+  no-permission: "%prefix% &c需要权限 &4%permission% &c执行此操作"
+  open-success: "%prefix% &a你成功打开了分解界面"
+  reload-success: "%prefix% &a配置重载完成，耗时 &e%time%ms"
+
+  # ===== 奖励错误 =====
+  # 未知奖励类型
+  unknown-reward-type: "%prefix% &c未知的奖励类型: &f%type%"
+  # 使用配置的奖励格式错误消息
+  invalid-reward-format: "%prefix% &c奖励配置格式错误: &f%rewardStr%"
+
+  # ===== 调试模板 =====
+  "debug-command-execute": "&7[调试] 执行命令: &f%command%"
+
+  # 分解成功
   success: "&a分解物品成功 &f<number> &a件"
+  # 分解失败
   failed: "&c分解物品失败 &f<number> &c件"
+  # 无法分解
   nodecompose: "&c该物品无法分解！"
-  no-permission: "&c你没有权限执行这个命令！缺少权限: &4%permission%"
+
+  # 玩家执行
   not-a-player: "&c这个命令只能由玩家执行！"
-  help-header: "&a=== HCFenJie 插件帮助 ==="
-  help-command-help: "&b/fj help &7- 显示帮助信息"
-  help-command-open: "&b/fj open &7- 打开分解界面"
-  help-command-reload: "&b/fj reload &7- 重载配置文件"
-  reload-success: "&a重载成功"
-  open-success: "&a你成功打开了分解界面！"
+
+  command-error: "&c命令执行失败！&7(指令: &f%command%&7) &c错误码: &4%error_code%"
+
+
+
+

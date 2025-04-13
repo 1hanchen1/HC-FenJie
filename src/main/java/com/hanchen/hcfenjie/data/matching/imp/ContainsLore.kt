@@ -2,6 +2,7 @@ package com.hanchen.hcfenjie.data.matching.imp
 
 import com.hanchen.hcfenjie.data.matching.Matching
 import com.hanchen.hcfenjie.util.LoggerUtil
+import com.hanchen.hcfenjie.util.MessageUtil
 import org.bukkit.inventory.ItemStack
 
 /**
@@ -17,13 +18,13 @@ class ContainsLore : Matching {
      */
     override fun isMatching(itemStack: ItemStack, args: String): Boolean {
         val meta = itemStack.itemMeta ?: return false
-        val result = meta.lore?.any { loreLine ->
-            loreLine.contains(args, ignoreCase = true)
-        } ?: false
+        // 新增颜色代码转换
+        val processedArgs = MessageUtil.translateAdvancedColorCodes(args)
 
-        // 调试模式提示
-        LoggerUtil.debug("检查物品描述是否包含: 物品=${itemStack.type}, 文本=$args, 结果=$result")
-
-        return result
+        return meta.lore?.any { loreLine ->
+            loreLine.contains(processedArgs, ignoreCase = true)
+        } ?: false.also { result ->
+            LoggerUtil.debug("ContainsLore匹配: 物品=${itemStack.type} 目标=${processedArgs} 结果=$result")
+        }
     }
 }

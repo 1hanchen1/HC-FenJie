@@ -1,6 +1,7 @@
 package com.hanchen.hcfenjie.util
 
 import com.hanchen.hcfenjie.Main
+import com.hanchen.hcfenjie.yaml.ConfigManager
 import org.bukkit.command.CommandSender
 
 /**
@@ -8,8 +9,39 @@ import org.bukkit.command.CommandSender
  * 支持全系列颜色代码、安全检查、批量发送等功能
  */
 object MessageUtil {
-    // 预编译正则表达式提升性能
-    private val COLOR_CODE_REGEX = Regex("&([0-9a-fk-orxA-FK-ORX])")
+    /**
+     * 发送带前缀的消息（自动处理前缀占位符）
+     */
+    fun sendFormattedMessage(sender: CommandSender?, key: String, vararg placeholders: Pair<String, Any>) {
+        val rawMessage = Main.instance.config?.getString("messages.$key") ?: return
+        applyMessageFormatting(rawMessage, placeholders.toMap()).let {
+            sendMessage(sender, it)
+        }
+    }
+    /**
+     * 应用消息格式化（前缀+占位符）
+     */
+    private fun applyMessageFormatting(raw: String, placeholders: Map<String, Any>): String {
+        // 1. 处理前缀占位符
+        var formatted = raw.replace("%prefix%", ConfigManager.messagePrefix)
+
+        // 2. 如果没有显式使用%prefix%，自动添加前缀
+        if (!raw.contains("%prefix%")) {
+            formatted = ConfigManager.messagePrefix + formatted
+        }
+
+        // 使用安全类型转换
+        placeholders.forEach { (key, value) ->
+            formatted = formatted.replace(
+                "%$key%",
+                value.toString() // 强制转换为String
+            )
+        }
+
+        return translateAdvancedColorCodes(formatted)
+    }
+    // 修改正则表达式以正确匹配十六进制颜色代码
+    private val COLOR_CODE_REGEX = Regex("&([0-9a-fk-orxA-FK-ORX]|x(&[0-9a-fA-F]){6})")
 
     /**
      * 安全发送消息（支持空值检查）
@@ -19,6 +51,11 @@ object MessageUtil {
      */
     @JvmOverloads
     fun sendMessage(sender: CommandSender?, message: String?, logIfEmpty: Boolean = false) {
+        // 添加空值过滤
+        val safeMessage = message?.takeIf { it.isNotEmpty() } ?: run {
+            if (logIfEmpty) LoggerUtil.debug("空消息已过滤")
+            return
+        }
         when {
             sender == null -> {
                 LoggerUtil.warn("尝试发送消息给null接收者")
@@ -52,9 +89,10 @@ object MessageUtil {
      * @return 转换后的消息（自动添加§前缀）
      */
     fun translateAdvancedColorCodes(input: String): String {
-        return COLOR_CODE_REGEX.replace(input) {
-            when (val code = it.groupValues[1].lowercase()) {
-                "x" -> parseHexColor(it) // 处理十六进制颜色
+        // 修正后的正则表达式替换逻辑
+        return COLOR_CODE_REGEX.replace(input) { match ->
+            when (val code = match.groupValues[1].lowercase()) {
+                "x" -> parseHexColor(match)
                 else -> "§$code"
             }
         }
@@ -80,11 +118,21 @@ object MessageUtil {
      * @return 解析后的颜色代码
      */
     private fun parseHexColor(match: MatchResult): String {
-        val hexStr = match.value.substringAfter('x').replace("&", "")
+        // 获取完整的颜色代码部分（如 &x&F&F&F&F&F&F）
+        val fullCode = match.value
+
+        // 正确提取十六进制字符（过滤所有非十六进制字符）
+        val hexStr = fullCode
+            .substringAfter('x', "") // 从x开始截取
+            .filter { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' } // 安全过滤
+            .take(6) // 最多取6位
+            .padEnd(6, 'f') // 不足补f
+
         return if (hexStr.length == 6) {
+            // 使用标准格式 §x§f§f§f§f§f§f
             "§x${hexStr.map { "§$it" }.joinToString("")}"
         } else {
-            LoggerUtil.warn("无效的十六进制颜色代码: ${match.value}")
+            LoggerUtil.warn("无效的十六进制颜色代码: $fullCode")
             ""
         }
     }

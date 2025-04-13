@@ -38,9 +38,10 @@ class MainCommand : CommandExecutor, TabCompleter {
                 "help" -> showHelp(sender) // 显示帮助信息
                 "open" -> handleOpenCommand(sender) // 处理打开命令
                 "reload" -> handleReloadCommand(sender) // 处理重载命令
-                else -> MessageUtil.sendMessage(
+                else -> MessageUtil.sendFormattedMessage(
                     sender,
-                    (Main.instance.prefix + Main.instance.unknownCommandMessage?.replace("%command%", label))
+                    "unknown-command",
+                    "command" to label
                 )
             }
         }
@@ -55,15 +56,25 @@ class MainCommand : CommandExecutor, TabCompleter {
         // 调试模式提示
         LoggerUtil.debug("显示帮助信息")
 
-        // 获取帮助信息并发送
-        val messages = listOfNotNull(
-            Main.instance.helpHeaderMessage,
-            Main.instance.helpCommandHelpMessage,
-            Main.instance.helpCommandOpenMessage,
-            Main.instance.helpCommandReloadMessage?.takeIf { sender.hasPermission("hcfj.reload") }
+        // 使用消息键列表动态生成帮助信息
+        val messageKeys = listOfNotNull(
+            "help-header",
+            "help-help",
+            "help-open",
+            "help-reload".takeIf { sender.hasPermission("hcfj.reload") },
+            "help-footer",
+            "help-version"  // 新增版本信息
         )
-        messages.forEach { MessageUtil.sendMessage(sender, it) }
+
+        messageKeys.forEach { key ->
+            MessageUtil.sendFormattedMessage(
+                sender,
+                key,
+                "version" to Main.instance.description.version
+            )
+        }
     }
+
 
     /**
      * 处理打开命令
@@ -75,27 +86,17 @@ class MainCommand : CommandExecutor, TabCompleter {
 
         // 检查发送者是否为玩家
         if (sender !is Player) {
-            MessageUtil.sendMessage(sender,
-                (Main.instance.prefix + Main.instance.notAPlayerMessage)
-            )
+            MessageUtil.sendFormattedMessage(sender, "not-player")
             return
         }
 
-        // 检查权限
-        val permission = "hcfj.open"
-        if (!sender.hasPermission(permission)) {
-            MessageUtil.sendMessage(
-                sender,
-                (Main.instance.prefix + Main.instance.noPermissionMessage?.replace("%permission%", permission))
-            )
-            return
+        MessageUtil.sendFormattedMessage(
+            sender,
+            if (sender.hasPermission("hcfj.open")) "open-success" else "no-permission",
+            "permission" to "hcfj.open"
+        ).run {
+            InventoryUtil.openInventory(sender)
         }
-
-        // 打开分解界面
-        InventoryUtil.openInventory(sender)
-        MessageUtil.sendMessage(sender,
-            (Main.instance.prefix + Main.instance.openSuccessMessage)
-        )
     }
 
     /**
@@ -104,14 +105,13 @@ class MainCommand : CommandExecutor, TabCompleter {
      */
     private fun handleReloadCommand(sender: CommandSender) {
         // 调试模式提示
-            LoggerUtil.debug("处理重载命令")
+        LoggerUtil.debug("处理重载命令")
 
-        // 检查权限
-        val permission = "hcfj.reload"
-        if (!sender.hasPermission(permission)) {
-            MessageUtil.sendMessage(
+        if (!sender.hasPermission("hcfj.reload")) {
+            MessageUtil.sendFormattedMessage(
                 sender,
-                (Main.instance.prefix + Main.instance.noPermissionMessage?.replace("%permission%", permission))
+                "no-permission",
+                "permission" to "hcfj.reload"
             )
             return
         }
@@ -121,7 +121,7 @@ class MainCommand : CommandExecutor, TabCompleter {
             initDefaultYaml()
             initFenJie()
             ConfigManager.reload()
-            MessageUtil.sendMessage(sender, (Main.instance.prefix + reloadSuccessMessage))
+            MessageUtil.sendFormattedMessage(sender, "reload-success")
         }
     }
 
